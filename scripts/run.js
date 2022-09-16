@@ -1,24 +1,24 @@
 const main = async () => {
     const [owner, randomPerson] = await hre.ethers.getSigners();
-    const waveContractFactory = await hre.ethers.getContractFactory("WavePortal");
-    const waveContract = await waveContractFactory.deploy();
-    await waveContract.deployed();
+    const heartContractFactory = await hre.ethers.getContractFactory("SendLove");
+    const heartContract = await heartContractFactory.deploy();
+    await heartContract.deployed();
 
-    console.log("Contract deployed to:", waveContract.address);
+    console.log("Contract deployed to:", heartContract.address);
     console.log("Contract deployed by:", owner.address);
 
-    let waveCount;
-    waveCount = await waveContract.getTotalWaves();
+    let heartCount;
+    heartCount = await heartContract.getTotalHearts();
 
-    let waveTxn = await waveContract.wave();
-    await waveTxn.wait();
+    let heartTxn = await heartContract.sendLove();
+    await heartTxn.wait();
 
-    waveCount = await waveContract.getTotalWaves();
+    heartCount = await heartContract.getTotalHearts();
 
-    waveTxn = await waveContract.connect(randomPerson).wave();
-    await waveTxn.wait();
+    heartTxn = await heartContract.connect(randomPerson).sendLove();
+    await heartTxn.wait();
 
-    waveCount = await waveContract.getTotalWaves();
+    heartCount = await heartContract.getTotalHearts();
 };
 
 const runMain = async () => {
