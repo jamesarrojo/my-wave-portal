@@ -1,24 +1,28 @@
 const main = async () => {
-    const [owner, randomPerson] = await hre.ethers.getSigners();
     const heartContractFactory = await hre.ethers.getContractFactory("SendLove");
     const heartContract = await heartContractFactory.deploy();
     await heartContract.deployed();
-
     console.log("Contract deployed to:", heartContract.address);
-    console.log("Contract deployed by:", owner.address);
 
     let heartCount;
     heartCount = await heartContract.getTotalHearts();
+    console.log(heartCount.toNumber());
 
-    let heartTxn = await heartContract.sendLove();
+    // sending love
+    let heartTxn = await heartContract.sendLove("A message!");
     await heartTxn.wait();
 
-    heartCount = await heartContract.getTotalHearts();
+    const [_, randomPerson] = await hre.ethers.getSigners();
 
-    heartTxn = await heartContract.connect(randomPerson).sendLove();
+    // heartCount = await heartContract.getTotalHearts();
+
+    heartTxn = await heartContract.connect(randomPerson).sendLove("Another message!");
     await heartTxn.wait();
 
-    heartCount = await heartContract.getTotalHearts();
+    // heartCount = await heartContract.getTotalHearts();
+
+    let allHearts = await heartContract.getAllHearts();
+    console.log(allHearts);
 };
 
 const runMain = async () => {
