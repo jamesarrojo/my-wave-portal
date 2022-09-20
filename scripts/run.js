@@ -1,25 +1,48 @@
 const main = async () => {
     const heartContractFactory = await hre.ethers.getContractFactory("SendLove");
-    const heartContract = await heartContractFactory.deploy();
+    const heartContract = await heartContractFactory.deploy({
+        value: hre.ethers.utils.parseEther("0.1"),
+    });
     await heartContract.deployed();
     console.log("Contract deployed to:", heartContract.address);
 
-    let heartCount;
-    heartCount = await heartContract.getTotalHearts();
-    console.log(heartCount.toNumber());
+    // get contract balance
+    let contractBalance = await hre.ethers.provider.getBalance(
+        heartContract.address
+    );
+    console.log(
+        "Contract balance:",
+        hre.ethers.utils.formatEther(contractBalance)
+    );
 
-    // sending love
-    let heartTxn = await heartContract.sendLove("A message!");
+    
+
+    // let heartCount;
+    // heartCount = await heartContract.getTotalHearts();
+    // console.log(heartCount.toNumber());
+
+    // sending love - 2 sendlove now
+    let heartTxn = await heartContract.sendLove("This is message #1");
     await heartTxn.wait();
 
-    const [_, randomPerson] = await hre.ethers.getSigners();
+    let heartTxn2 = await heartContract.sendLove("This is message #2");
+    await heartTxn2.wait();
+
+    // const [_, randomPerson] = await hre.ethers.getSigners();
 
     // heartCount = await heartContract.getTotalHearts();
 
-    heartTxn = await heartContract.connect(randomPerson).sendLove("Another message!");
-    await heartTxn.wait();
+    // heartTxn = await heartContract.connect(randomPerson).sendLove("Another message!");
+    // await heartTxn.wait();
 
     // heartCount = await heartContract.getTotalHearts();
+
+    // Get Contract balance to see what happened!
+    contractBalance = await hre.ethers.provider.getBalance(heartContract.address);
+    console.log(
+        "Contract balance",
+        hre.ethers.utils.formatEther(contractBalance)
+    );
 
     let allHearts = await heartContract.getAllHearts();
     console.log(allHearts);
