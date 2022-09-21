@@ -32,8 +32,8 @@ contract SendLove {
     function sendLove(string memory _message) public {
         // make sure timestamp is at least 15-minutes bigger than the last timestamp stored
         require(
-            lastSendLoveAt[msg.sender] + 15 minutes < block.timestamp,
-            "Wait 15m"
+            lastSendLoveAt[msg.sender] + 30 seconds < block.timestamp,
+            "Must wait 30 seconds before waving again."
         );
 
         // update current timestamp we have for the user
